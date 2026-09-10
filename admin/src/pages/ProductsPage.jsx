@@ -11,6 +11,7 @@ import {
   HiOutlineChevronRight,
   HiOutlineEye,
   HiOutlineEyeOff,
+  HiOutlineCube,
 } from 'react-icons/hi';
 
 function ProductsPage() {
