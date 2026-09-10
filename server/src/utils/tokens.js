@@ -102,11 +102,12 @@ async function revokeAllUserTokens(userId) {
  * Helper: set the refresh token as an httpOnly cookie.
  */
 function setRefreshCookie(res, rawToken) {
+  const isProduction = process.env.NODE_ENV === 'production';
   const maxAge = parseDuration(JWT_REFRESH_EXPIRES_IN);
   res.cookie('refreshToken', rawToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'strict', // 'none' required for cross-site (Vercel ↔ Render)
     maxAge,
     path: '/api/auth', // scoped to auth routes only
   });
@@ -116,10 +117,11 @@ function setRefreshCookie(res, rawToken) {
  * Helper: clear the refresh token cookie.
  */
 function clearRefreshCookie(res) {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie('refreshToken', '', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'strict',
     maxAge: 0,
     path: '/api/auth',
   });
