@@ -21,14 +21,21 @@ const orderRoutes = require('./routes/order.routes');
 
 const app = express();
 
-// ─── Security headers ───
-app.use(helmet());
+// ─── CORS (must be before helmet so preflight OPTIONS gets handled) ───
+const allowedOrigins = [env.CLIENT_URL, env.ADMIN_URL].filter(Boolean);
+console.log('✅  Allowed CORS origins:', allowedOrigins);
 
-// ─── CORS ───
 app.use(
   cors({
-    origin: [env.CLIENT_URL, env.ADMIN_URL],
+    origin: allowedOrigins,
     credentials: true, // allow cookies
+  })
+);
+
+// ─── Security headers ───
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
 
